@@ -4,7 +4,9 @@ $LOAD_PATH.push root
 require 'cuba'
 require_relative '../lib/ak'
 
+Ak.env = 'development'
 Ak.root = root
+
 Ak.require 'routes/quotes'
 
 Ak.start
