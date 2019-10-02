@@ -1,7 +1,8 @@
 # ak
 
 Lightweight library for "hot code" reloading.  
-Check the [demo](https://https://github.com/BeRMaNyA/ak/tree/master/cuba-app)
+
+Check the [demo](https://github.com/BeRMaNyA/ak/tree/master/cuba-app)
 
 ## Installation
 
@@ -28,7 +29,6 @@ Ak.root = File.dirname(File.expand_path(__FILE__))
 ```ruby
 Ak.require 'path/to/file'
 Ak.require_relative 'file'
-
 Ak.require_folders 'lib', 'app'
 ```
 
