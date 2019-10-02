@@ -2,7 +2,7 @@ require 'filewatcher'
 
 module Ak
   extend self
-  attr_accessor :root
+  attr_accessor :root, :env
 
   class Registry
     attr_reader :files
@@ -125,10 +125,12 @@ module Ak
   end
 
   def require(path, **options)
+    return require path unless development?
     registry.load(path, options.merge(require: true))
   end
 
   def require_relative(path, **options)
+    return require_relative path unless development?
     caller_path = File.dirname(caller_locations.first.path)
     path = File.expand_path(path, caller_path)
     registry.load(path, options.merge(require: true))
@@ -161,6 +163,10 @@ module Ak
         end
       end
     end
+  end
+
+  def development?
+    env == 'development'
   end
 
   def registry
