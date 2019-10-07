@@ -14,14 +14,14 @@ $ gem install ak
 
 ### Setup
 
-Require ak gem and set the environment and root directory.  
+Require the ak gem and set the environment and root directory.  
 The reloader will not work if the environment is not development.
 
 ```ruby
 require 'ak'
 
 Ak.env = 'development'
-Ak.root = File.dirname(File.expand_path(__FILE__))
+Ak.root = File.expand_path('../', __FILE__)
 ```
 
 ### Usage
@@ -60,6 +60,7 @@ Ak.start
 
 ### TODO
 
+- [ ] Finish Cuba App
 - [ ] Tests
 - [ ] Support callbacks
 - [ ] Improves constant finder
