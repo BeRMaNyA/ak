@@ -1,4 +1,5 @@
 require 'filewatcher'
+require_relative 'ak/version'
 
 module Ak
   extend self
@@ -125,12 +126,12 @@ module Ak
   end
 
   def require(path, **options)
-    return require path unless development?
+    return super path unless development?
     registry.load(path, options.merge(require: true))
   end
 
   def require_relative(path, **options)
-    return require_relative path unless development?
+    return super path unless development?
     caller_path = File.dirname(caller_locations.first.path)
     path = File.expand_path(path, caller_path)
     registry.load(path, options.merge(require: true))
@@ -140,7 +141,21 @@ module Ak
     registry.load(path, options.merge(require: false))
   end
 
+  def require_folders(*paths)
+    get_files paths do |file|
+      require_relative file
+    end
+  end
+
+  def reload_folders(*paths)
+    get_files paths do |file|
+      reload file, options
+    end
+  end
+
   def start
+    return unless development?
+
     dirs = registry.files.map { |file| File.dirname(file.name) }.uniq
     filewatcher = Filewatcher.new(dirs)
 
@@ -156,7 +171,7 @@ module Ak
             file.reload            if event == :updated
             file.unload_and_reload if event == :deleted
           else
-            self.require(filename)
+            require(filename)
           end
         rescue Exception => e
           puts "\nError on event #{event}:\n#{'=' * 20}\n#{e}\n"
@@ -165,11 +180,18 @@ module Ak
     end
   end
 
-  def development?
-    env == 'development'
-  end
-
   def registry
     @registry ||= Registry.new
+  end
+
+  private
+
+  def get_files(paths)
+    pattern = paths.map { |path| "#{Ak.root}/#{path}/**/*" }
+    Dir[*pattern].each { |file| yield(file) } 
+  end
+
+  def development?
+    env == 'development'
   end
 end
